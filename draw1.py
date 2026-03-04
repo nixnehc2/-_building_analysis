@@ -110,14 +110,14 @@ def visualize_polygon(vertices: List[Tuple[float, float]],
         if not filename.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.pdf', '.svg')):
             filename += '.jpg'  # 默认使用jpg格式
         
-        # 创建repair子目录（如果不存在）
+        # 创建输出目录（如果不存在）
         import os
-        repair_dir = "repair"
-        if not os.path.exists(repair_dir):
-            os.makedirs(repair_dir)
+        output_dir = "data/repair"
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         
         # 构建完整的保存路径
-        full_path = os.path.join(repair_dir, filename)
+        full_path = os.path.join(output_dir, filename)
         
         # 保存图片
         try:
@@ -310,10 +310,14 @@ def process_json_data(json_data, filename: str, k: float) -> Dict:
     return polygon
     
 
-def find_json_files(directory: str = ".") -> List[str]:
+def find_json_files(directory: str = "data/repair") -> List[str]:
     """
     查找指定目录下的所有JSON文件
     """
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"已创建数据目录: {directory}/")
+    
     json_files = []
     for file in os.listdir(directory):
         if file.endswith('.json'):
@@ -324,17 +328,24 @@ def find_json_files(directory: str = ".") -> List[str]:
     return json_files
 
 
-path='repair'
-k_value=30 # 递归阈值，待定
-json_files = find_json_files(path)
-for json_file in json_files:
-    with open(path+'/'+json_file, 'r', encoding='utf-8') as f:
-            print(json_file)
-            data = json.load(f)
-            
-            # 处理数据
-            results = process_json_data(
-                data, 
-                json_file, 
-                k=k_value
-            )
+if __name__ == "__main__":
+    data_dir = "data/repair"
+    k_value = 30  # 递归阈值，待定
+    
+    json_files = find_json_files(data_dir)
+    
+    if not json_files:
+        print(f"在 {data_dir}/ 目录下未找到JSON文件！")
+        print(f"请将JSON文件放入 {data_dir}/ 目录。")
+    else:
+        for json_file in json_files:
+            json_path = os.path.join(data_dir, json_file)
+            with open(json_path, 'r', encoding='utf-8') as f:
+                print(f"处理文件: {json_file}")
+                data = json.load(f)
+                
+                results = process_json_data(
+                    data, 
+                    json_file, 
+                    k=k_value
+                )

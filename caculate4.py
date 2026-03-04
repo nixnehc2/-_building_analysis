@@ -355,10 +355,14 @@ def process_json_data(json_data, filename: str, k: float = 1.5, angle_threshold:
     
     return all_results
 
-def find_json_files(directory: str = ".") -> List[str]:
+def find_json_files(directory: str = "data") -> List[str]:
     """
     查找指定目录下的所有JSON文件
     """
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"已创建数据目录: {directory}/")
+    
     json_files = []
     for file in os.listdir(directory):
         if file.endswith('.json'):
@@ -467,12 +471,13 @@ def main():
         angle_threshold = 165
         k_value = 1.5
     
-    # 获取当前目录下的所有JSON文件
-    json_files = find_json_files()
+    # 获取 data/ 目录下的所有JSON文件
+    data_dir = "data"
+    json_files = find_json_files(data_dir)
     
     if not json_files:
-        print("在当前目录下未找到JSON文件！")
-        print("请确保JSON文件与脚本在同一目录下。")
+        print(f"在 {data_dir}/ 目录下未找到JSON文件！")
+        print(f"请将JSON文件放入 {data_dir}/ 目录。")
         return
     
     print(f"找到 {len(json_files)} 个JSON文件:")
@@ -486,7 +491,8 @@ def main():
     for json_file in json_files:
             
             # 加载JSON数据
-        with open(json_file, 'r', encoding='utf-8') as f:
+        json_path = os.path.join(data_dir, json_file)
+        with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
             # 处理数据

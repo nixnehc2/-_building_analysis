@@ -131,7 +131,7 @@ def save_repaired_polygon(
     original_json_data: Dict,
     repaired_polygon: Polygon,
     original_filename: str,
-    output_dir: str = "repair"
+    output_dir: str = "data/repair"
 ) -> str:
     """
     将修复后的多边形保存为JSON文件，格式与输入JSON类似
@@ -780,10 +780,14 @@ def process_json_data(json_data, filename: str) -> Dict:
     save_repaired_polygon(json_data, polygon, filename)
     return polygon
 
-def find_json_files(directory: str = ".") -> List[str]:
+def find_json_files(directory: str = "data") -> List[str]:
     """
     查找指定目录下的所有JSON文件
     """
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"已创建数据目录: {directory}/")
+    
     json_files = []
     for file in os.listdir(directory):
         if file.endswith('.json'):
@@ -793,13 +797,20 @@ def find_json_files(directory: str = ".") -> List[str]:
     json_files.sort()
     return json_files
 
-json_files = find_json_files()
-for json_file in json_files:
-    with open(json_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            # 处理数据
-            print(json_file)
-            results = process_json_data(
-                data, 
-                json_file
-            )
+if __name__ == "__main__":
+    data_dir = "data"
+    json_files = find_json_files(data_dir)
+    
+    if not json_files:
+        print(f"在 {data_dir}/ 目录下未找到JSON文件！")
+        print(f"请将JSON文件放入 {data_dir}/ 目录。")
+    else:
+        for json_file in json_files:
+            json_path = os.path.join(data_dir, json_file)
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print(f"处理文件: {json_file}")
+                results = process_json_data(
+                    data, 
+                    json_file
+                )

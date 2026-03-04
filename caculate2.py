@@ -141,12 +141,23 @@ def create_summary_table(all_results: Dict) -> pd.DataFrame:
 
 def main():
     print("正在处理建筑形态数据...")
-    json_files = [f for f in os.listdir('.') if f.endswith('.json')]
+    data_dir = "data"
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+        print(f"已创建数据目录: {data_dir}/")
+    
+    json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
+    
+    if not json_files:
+        print(f"在 {data_dir}/ 目录下未找到JSON文件！")
+        print(f"请将JSON文件放入 {data_dir}/ 目录。")
+        return
     
     all_results = {}
     for json_file in json_files:
         try:
-            with open(json_file, 'r', encoding='utf-8') as f:
+            json_path = os.path.join(data_dir, json_file)
+            with open(json_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             if 'features' in data:
                 results = process_gis_json(data, json_file)

@@ -121,9 +121,12 @@ def visualize_polygon(vertices: List[Tuple[float, float]],
         except Exception as e:
             print(f"保存图片失败: {e}")
     
-    # 12. 显示图形
+    # 12. 显示图形（如果没有保存文件才显示）
     plt.tight_layout()
-    plt.show()
+    if not filename:
+        plt.show()
+    else:
+        plt.close(fig)
     
     return polygon
 
@@ -469,7 +472,7 @@ from shapely.geometry import Polygon, Point
 import numpy as np
 import math
 
-def fix_right_angles(polygon: Polygon, theta_eps: float = 5.0) -> Polygon:
+def fix_right_angles(polygon: Polygon, theta_eps: float = 15.0) -> Polygon:
     """
     调整多边形的角度使其成为直角（90度或270度）
     

@@ -93,15 +93,21 @@ dachuang/
 ├── caculate5.py
 ├── caculate6.py
 ├── draw1.py
+├── pipeline.py                    # ← 【推荐】一键处理流水线
 ├── README.md
 │
 ├── data/                          # ← 【输入】所有JSON文件放这里
-│   ├── 户型1.json
-│   ├── 户型2.json
-│   ├── building_data.json
-│   └── repair/                    # ← caculate6.py输出 / draw1.py输入
-│       ├── 户型1_1.json
-│       └── 户型1_result.jpg
+│   ├── 1.json
+│   ├── 2.json
+│   ├── ...
+│   ├── repair/                    # ← 修复后的JSON
+│   │   ├── 1_1.json
+│   │   └── 2_1.json
+│   └── images/                    # ← pipeline.py 输出的三阶段图片
+│       ├── 1_1_original.png       # 原始
+│       ├── 1_2_repaired.png       # 修复后
+│       ├── 1_3_simplified.png     # 简化后
+│       └── ...
 │
 ├── 边界计算汇总.xlsx               # ← 【输出】caculate.py
 ├── 建筑轮廓形态分析汇总.xlsx        # ← 【输出】caculate1.py
@@ -252,6 +258,27 @@ python draw1.py
 ```
 
 **参数**：在脚本中修改 `k_value` 变量调整简化程度（默认30）
+
+---
+
+### 9. pipeline.py - 批量处理流水线（推荐）
+
+| 项目 | 说明 |
+|------|------|
+| **功能** | 一键完成：修复 → 简化 → 保存三阶段图片 |
+| **输入格式** | 户型图 JSON |
+| **输入位置** | `data/` |
+| **输出文件** | `{文件名}_1_original.png`（原始）<br>`{文件名}_2_repaired.png`（修复后）<br>`{文件名}_3_simplified.png`（简化后）<br>`{文件名}_1.json`（修复后JSON） |
+| **输出位置** | 图片：`data/images/`<br>JSON：`data/repair/` |
+
+```bash
+python pipeline.py
+```
+
+**特点**：
+- 自动调用 `caculate6.py` 和 `draw1.py` 的函数，无需分步运行
+- 批量处理所有文件
+- 保存三个阶段的对比图片
 
 ---
 

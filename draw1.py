@@ -126,9 +126,12 @@ def visualize_polygon(vertices: List[Tuple[float, float]],
         except Exception as e:
             print(f"保存图片失败: {e}")
     
-    # 12. 显示图形
+    # 12. 显示图形（如果没有保存文件才显示）
     plt.tight_layout()
-    plt.show()
+    if not filename:
+        plt.show()
+    else:
+        plt.close(fig)
     
     return polygon
 
@@ -301,7 +304,11 @@ def process_json_data(json_data, filename: str, k: float) -> Dict:
     length_rate_mm_per_px = float(length_rate.split()[0])
     polygon = init(boundary_polygon, length_rate_mm_per_px)
     # visualize_polygon(list(polygon.exterior.coords),filename1+'_result')
-    polygon = polygon.simplify(tolerance=k)
+    
+    
+    # polygon = polygon.simplify(tolerance=k)
+    
+
     # visualize_polygon(list(polygon.exterior.coords),filename1+'_result')
     polygon=Polygon(get_pro_polygon(polygon))
     # visualize_polygon(list(polygon.exterior.coords),filename1+'_result')

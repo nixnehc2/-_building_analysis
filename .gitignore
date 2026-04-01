@@ -39,6 +39,8 @@ env/
 *.csv
 *.txt
 !README.md
+*.json
+*.png
 
 # Visualization output
 polygon_visualizations/
